@@ -293,6 +293,20 @@ class ConnectionManager {
     start();
   }
 
+  /// manual connect to a specific host — bypasses mDNS discovery.
+  /// useful when the comma device is on a network where multicast/mDNS
+  /// is blocked (e.g. most Android phone hotspots).
+  void connectToHost(String host) {
+    host = host.trim();
+    if (host.isEmpty) return;
+    _setStatus('manual connect to $host');
+    _stopDiscovery();
+    _teardown();
+    _retryCount = 0;
+    _host = host;
+    _connect();
+  }
+
   Future<String?> _loadCachedHost() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_cachedHostKey);

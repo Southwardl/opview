@@ -28,16 +28,27 @@ const borderColors = {
 class AugmentedRoadView extends StatefulWidget {
   final UIState uiState;
   final RTCVideoRenderer? videoRenderer;
+  final void Function(String host)? onConnectToHost;
 
   const AugmentedRoadView({
     super.key,
     required this.uiState,
     this.videoRenderer,
+    this.onConnectToHost,
   });
 
   @override
   State<AugmentedRoadView> createState() => _AugmentedRoadViewState();
 }
+
+class _AugmentedRoadViewState extends State<AugmentedRoadView> {
+  final TextEditingController _hostController = TextEditingController();
+
+  @override
+  void dispose() {
+    _hostController.dispose();
+    super.dispose();
+  }
 
 class _AugmentedRoadViewState extends State<AugmentedRoadView> {
   // cached transform inputs — only recompute when these change
@@ -145,6 +156,48 @@ class _AugmentedRoadViewState extends State<AugmentedRoadView> {
                           fontWeight: FontWeight.w300,
                         ),
                       )),
+                      SizedBox(height: 24 * scale),
+                      // manual IP entry — fallback when mDNS discovery fails
+                      Container(
+                        width: 260 * scale,
+                        padding: EdgeInsets.symmetric(horizontal: 12 * scale),
+                        decoration: BoxDecoration(
+                          color: const Color(0x33FFFFFF),
+                          borderRadius: BorderRadius.circular(8 * scale),
+                        ),
+                        child: TextField(
+                          controller: _hostController,
+                          keyboardType: TextInputType.url,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18 * scale,
+                            fontFamily: 'monospace',
+                          ),
+                          decoration: InputDecoration(
+                            hintText: 'device IP e.g. 192.168.5.1',
+                            hintStyle: TextStyle(
+                              color: const Color(0x88FFFFFF),
+                              fontSize: 16 * scale,
+                            ),
+                            border: InputBorder.none,
+                            isDense: true,
+                          ),
+                          onSubmitted: (v) => widget.onConnectToHost?.call(v),
+                        ),
+                      ),
+                      SizedBox(height: 12 * scale),
+                      if (widget.onConnectToHost != null)
+                        TextButton(
+                          onPressed: () =>
+                              widget.onConnectToHost?.call(_hostController.text),
+                          child: Text(
+                            'Connect to IP',
+                            style: TextStyle(
+                              color: const Color(0xCCFFFFFF),
+                              fontSize: 18 * scale,
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),

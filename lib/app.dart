@@ -60,6 +60,7 @@ class _OpviewAppState extends State<OpviewApp> with WidgetsBindingObserver {
         builder: (context, _) => AugmentedRoadView(
           uiState: _uiState,
           videoRenderer: _connectionManager.videoRenderer,
+          onConnectToHost: _connectionManager.connectToHost,
         ),
       ),
     );
