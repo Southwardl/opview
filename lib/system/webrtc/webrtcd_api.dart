@@ -7,9 +7,9 @@ import 'package:http/http.dart' as http;
 import 'package:opview/data/models.dart';
 
 // everything the stock UI subscribes to
+// NOTE: 'selfdriveState' was renamed to 'controlsState' in newer forks — removed
 const bridgeServicesOut = [
   'carState',
-  'selfdriveState',
   'controlsState',
   'modelV2',
   'liveCalibration',
