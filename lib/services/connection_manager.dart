@@ -104,7 +104,8 @@ class ConnectionManager {
   void _listenConnectivity() {
     _connectivitySub?.cancel();
     _connectivitySub = _connectivity.onConnectivityChanged.listen((result) {
-      final hasWifi = result.contains(ConnectivityResult.wifi);
+      // connectivity_plus 5.x yields a single ConnectivityResult
+      final hasWifi = result == ConnectivityResult.wifi;
       if (hasWifi && !_hadWifi) {
         _setStatus('WiFi connected, searching…');
         _hadWifi = true;

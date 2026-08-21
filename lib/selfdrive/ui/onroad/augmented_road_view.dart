@@ -50,7 +50,6 @@ class _AugmentedRoadViewState extends State<AugmentedRoadView> {
     super.dispose();
   }
 
-class _AugmentedRoadViewState extends State<AugmentedRoadView> {
   // cached transform inputs — only recompute when these change
   List<double> _cachedRpyCalib = [];
   List<double> _cachedWideFromDeviceEuler = [];

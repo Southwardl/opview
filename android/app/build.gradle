@@ -8,7 +8,7 @@ android {
     namespace = "org.dragonpilot.opview"
     // match dashy: explicit SDK versions for old headunit compat
     compileSdk = 36
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = "27.0.12077973"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -23,8 +23,8 @@ android {
         applicationId = "org.dragonpilot.opview"
         minSdk = 21          // Android 5.0 — pinned, do NOT use flutter.minSdkVersion (floats to 24+)
         targetSdk = 34
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+        versionCode = 1
+        versionName = "0.1.1"
     }
 
     // include 32-bit ARM + x86 for old headunits (Intel Atom Android 6)
@@ -40,6 +40,10 @@ android {
     buildTypes {
         release {
             signingConfig = signingConfigs.debug
+        }
+        // JIT-release mode — used for 32-bit x86 targets (no AOT artifacts)
+        jitRelease {
+            initWith release
         }
     }
 }

@@ -24,18 +24,18 @@ class MdnsDiscovery implements Discovery {
     await stop(); // clean up any previous discovery
     try {
       _discovery = BonsoirDiscovery(type: _serviceType);
-      await _discovery!.initialize();
+      await _discovery!.ready;
 
       _eventSub = _discovery!.eventStream?.listen((event) {
-        if (event is BonsoirDiscoveryServiceFoundEvent) {
-          final service = event.service;
+        final service = event.service;
+        if (service == null) return;
+        if (event.type == BonsoirDiscoveryEventType.discoveryServiceFound) {
           if (!service.name.startsWith(_servicePrefix)) return;
           debugPrint('[opview] found service: ${service.name}, resolving...');
           service.resolve(_discovery!.serviceResolver);
-        } else if (event is BonsoirDiscoveryServiceResolvedEvent) {
-          final service = event.service;
+        } else if (event.type == BonsoirDiscoveryEventType.discoveryServiceResolved) {
           if (!service.name.startsWith(_servicePrefix)) return;
-
+          if (service is! ResolvedBonsoirService) return;
           final host = service.host;
           if (host == null || host.isEmpty) return;
 
