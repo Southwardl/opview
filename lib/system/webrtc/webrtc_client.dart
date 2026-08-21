@@ -54,9 +54,16 @@ class WebRTCClient {
     };
 
     // video: recvonly
-    _pc!.onTrack = (event) {
-      if (event.track.kind == 'video' && event.streams.isNotEmpty) {
+    _pc!.onTrack = (event) async {
+      if (event.track.kind != 'video') return;
+      if (event.streams.isNotEmpty) {
         videoRenderer.srcObject = event.streams[0];
+      } else {
+        // some servers (aiortc) may not attach an msid stream to the track —
+        // wrap the track so the renderer still shows video
+        final stream = await createLocalMediaStream('opview');
+        stream.addTrack(event.track);
+        videoRenderer.srcObject = stream;
       }
     };
 
